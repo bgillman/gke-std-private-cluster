@@ -48,13 +48,21 @@ export RELEASE_CHANNEL="rapid"
 
 # --- Networking ---
 
+# Name of the VPC Network to deploy the cluster into
+# Example: "my-vpc-network"
+export VPC_NETWORK_NAME="vpc-02-us-central"
+
+# Name of the VPC Subnet for the cluster nodes and pods
+# Example: "my-vpc-subnet"
+export VPC_SUBNET_NAME="vpc-02-subnet-04"
+
 # VPC Network to deploy the cluster into
 # Format: "projects/<PROJECT_ID>/global/networks/<NETWORK_NAME>"
-export VPC_NETWORK="projects/${PROJECT_ID}/global/networks/vpc-02-us-central"
+export VPC_NETWORK="projects/${PROJECT_ID}/global/networks/${VPC_NETWORK_NAME}"
 
 # VPC Subnet for the cluster nodes and pods
 # Format: "projects/<PROJECT_ID>/regions/<REGION>/subnetworks/<SUBNET_NAME>"
-export VPC_SUBNET="projects/${PROJECT_ID}/regions/${REGION}/subnetworks/vpc-02-subnet-04"
+export VPC_SUBNET="projects/${PROJECT_ID}/regions/${REGION}/subnetworks/${VPC_SUBNET_NAME}"
 
 # Pod IP address range (CIDR notation)
 # Must be a valid private IP range.
