@@ -14,6 +14,7 @@ The script provisions a GKE cluster with the following features:
 *   **Dataplane V2:** For improved networking performance and security, with metrics and flow observability.
 *   **Enhanced Monitoring:** In-depth monitoring for various Kubernetes resources.
 *   **Managed Prometheus:** For scraping Prometheus-style metrics.
+*   **Gateway API**: The script enables the `standard` channel of the Gateway API.
 
 ## Prerequisites
 

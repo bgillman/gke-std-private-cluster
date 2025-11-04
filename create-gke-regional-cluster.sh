@@ -26,16 +26,16 @@ REGION="${REGION:-us-central1}"
 ZONE="${ZONE:-us-central1-a}"
 
 # Cluster Configuration
-CLUSTER_NAME="${CLUSTER_NAME:-gke-private-cluster}"
+CLUSTER_NAME="${CLUSTER_NAME:-gke-private-regional-cluster}"
 CLUSTER_VERSION="${CLUSTER_VERSION:-1.34.0-gke.2201000}"
 RELEASE_CHANNEL="${RELEASE_CHANNEL:-rapid}"
 
 # Network Configuration
 VPC_NETWORK="projects/${PROJECT_ID}/global/networks/vpc-02-us-central"
-VPC_SUBNET="projects/${PROJECT_ID}/regions/${REGION}/subnetworks/vpc-02-subnet-04"
+VPC_SUBNET="projects/${PROJECT_ID}/regions/${REGION}/subnetworks/vpc-02-subnet-05"
 
 # IP Ranges
-POD_CIDR="100.72.0.0/13"
+POD_CIDR="172.16.144.0/20"
 SERVICE_CIDR="${SERVICE_CIDR:-34.118.224.0/20}"  # Optional, can be auto-assigned
 
 # Master Authorized Networks (comma-separated, no spaces)
@@ -141,7 +141,7 @@ display_configuration() {
     echo ""
     echo "Network Configuration:"
     echo "  VPC Network:        vpc-02-us-central"
-    echo "  VPC Subnet:         vpc-02-subnet-04"
+    echo "  VPC Subnet:         vpc-02-subnet-05"
     echo "  Pod CIDR:           $POD_CIDR"
     echo "  Service CIDR:       $SERVICE_CIDR"
     echo ""
@@ -177,7 +177,7 @@ create_cluster() {
     
     gcloud beta container clusters create "$CLUSTER_NAME" \
         --project="$PROJECT_ID" \
-        --zone="$ZONE" \
+        --region="$REGION" \
         --node-locations="$ZONE" \
         --cluster-version="$CLUSTER_VERSION" \
         --release-channel="$RELEASE_CHANNEL" \
@@ -245,7 +245,7 @@ create_cluster() {
         \
         `# Tags and Labels` \
         --tags="gke-cluster,private-cluster" \
-        --labels="environment=production,managed-by=script"
+        --labels="environment=argolis,managed-by=script"
     
     if [ $? -eq 0 ]; then
         log_success "Cluster '$CLUSTER_NAME' created successfully!"
