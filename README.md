@@ -1,10 +1,14 @@
 # GKE Standard Private Cluster Deployment Script
 
-This script automates the creation of a Google Kubernetes Engine (GKE) Standard private cluster. It is designed to provision a secure and production-ready cluster with a variety of features enabled by default.
+This repository contains scripts to automate the creation of a Google Kubernetes Engine (GKE) Standard private cluster. It is designed to provision a secure and production-ready cluster with a variety of features enabled by default.
+
+There are two scripts available:
+- `create-gke-cluster.sh`: Creates a zonal GKE cluster.
+- `create-gke-regional-cluster.sh`: Creates a regional GKE cluster.
 
 ## Features
 
-The script provisions a GKE cluster with the following features:
+The scripts provision a GKE cluster with the following features:
 
 *   **Private Cluster:** Worker nodes have no external IP addresses.
 *   **Private Control Plane:** The Kubernetes API server is only accessible from authorized networks.
@@ -18,72 +22,62 @@ The script provisions a GKE cluster with the following features:
 
 ## Prerequisites
 
-Before running this script, ensure you have the following:
+Before running the scripts, ensure you have the following:
 
 *   `gcloud` CLI installed and authenticated (`gcloud auth login`).
 *   A Google Cloud project with the required APIs enabled (the script will attempt to enable them).
-*   A pre-existing VPC and subnet.
+*   A pre-existing VPC and subnet that match the configuration you will set.
 
 ## Configuration
 
-The script can be configured by setting environment variables. You can copy the commands below and modify the values to suit your needs.
+All configuration for the scripts is handled through a `config.sh` file. This allows you to define all your settings in one place and keeps your specific configuration separate from the core script logic.
 
-| Variable | Description |
-|---|---|
-| `export PROJECT_ID="YOUR_PROJECT"` | The Google Cloud project ID. |
-| `export REGION="YOUR_REGION"` | The region to create the cluster in. |
-| `export ZONE="YOUR_ZONE"` | The zone to create the cluster in. |
-| `export CLUSTER_NAME="CLUSTER_NAME` | The name of the GKE cluster. |
-| `export CLUSTER_VERSION="1.34.0-gke.2201000"` | The GKE version to use. |
-| `export RELEASE_CHANNEL="rapid"` | The GKE release channel. |
-| `export VPC_NETWORK="YOUR_VPC_NETWORK` | The VPC network for the cluster. |
-| `export VPC_SUBNET="YOUR_VPC_SUBNETWORK"` | The VPC subnetwork for the cluster. |
-| `export POD_CIDR="POD_CIDR"` | The IP range for pods. |
-| `export SERVICE_CIDR="SERVICES_CIDR"` | The IP range for services. |
-| `export MASTER_AUTHORIZED_NETWORKS="YOUR_AUTHORIZED_NETWORK"` | Comma-separated CIDR blocks for master access. |
-| `export MACHINE_TYPE="e2-medium"` | The machine type for the nodes. |
-| `export NUM_NODES="3"` | The number of nodes in the default node pool. |
-| `export DISK_SIZE="100"` | The disk size for the nodes in GB. |
-| `export DISK_TYPE="pd-balanced"` | The disk type for the nodes. |
-| `export IMAGE_TYPE="COS_CONTAINERD"` | The node image type. |
-| `export MAX_PODS_PER_NODE="110"` | The maximum number of pods per node. |
-| `export MAX_SURGE_UPGRADE="1"` | The maximum number of nodes that can be created during an upgrade. |
-| `export MAX_UNAVAILABLE_UPGRADE="0"` | The maximum number of nodes that can be unavailable during an upgrade. |
+### Step 1: Create Your Configuration File
+
+A template is provided to make configuration easy. Copy the example file to create your own personal configuration:
+
+```bash
+cp config.sh.example config.sh
+```
+
+**Important:** The `config.sh` file is included in `.gitignore`, so your local configuration will not be committed to your repository. This is done to protect sensitive information like your Project ID.
+
+### Step 2: Edit `config.sh`
+
+Open `config.sh` in a text editor. It contains all the variables needed to create your cluster. The file is heavily commented to explain what each variable does.
+
+Key variables to customize include:
+- `PROJECT_ID`
+- `REGION` and `ZONE`
+- `CLUSTER_NAME`
+- `VPC_NETWORK` and `VPC_SUBNET`
+- `MASTER_AUTHORIZED_NETWORKS` (to allow your IP to access the cluster)
+
+The scripts will automatically load the variables from this file when you run them. If `config.sh` does not exist, the script will exit with an error.
 
 ## Usage
+
+Once you have created and customized your `config.sh` file, you can run either of the creation scripts.
 
 1.  **Make the script executable:**
     ```bash
     chmod +x create-gke-cluster.sh
+    chmod +x create-gke-regional-cluster.sh
     ```
 
-2.  **Run the script:**
+2.  **Run the desired script:**
 
-    *   **Basic usage (with defaults from the script):**
+    *   **To create a zonal cluster:**
         ```bash
         ./create-gke-cluster.sh
         ```
 
-    *   **Override cluster name:**
+    *   **To create a regional cluster:**
         ```bash
-        CLUSTER_NAME="my-production-cluster" ./create-gke-cluster.sh
+        ./create-gke-regional-cluster.sh
         ```
 
-    *   **Override authorized networks (add your IP):**
-        ```bash
-        # Get your current IP
-        MY_IP=$(curl -s ifconfig.me)
-        MASTER_AUTHORIZED_NETWORKS="<YOUR_EXISTING_CIDR>,${MY_IP}/32" ./create-gke-cluster.sh
-        ```
-
-    *   **Override multiple settings:**
-        ```bash
-        PROJECT_ID="my-gcp-project" \
-        CLUSTER_NAME="prod-cluster-01" \
-        NUM_NODES="5" \
-        MACHINE_TYPE="n2-standard-4" \
-        ./create-gke-cluster.sh
-        ```
+The script will then guide you through the rest of the process.
 
 ## Post-Creation
 
@@ -98,7 +92,7 @@ After the cluster is created, the script will:
 
 Since this is a private cluster with an authorized network, you can access the Kubernetes API server in the following ways:
 
-*   **From an authorized IP address:** If your current IP is in the `MASTER_AUTHORIZED_NETWORKS` list, you can use `kubectl` directly.
+*   **From an authorized IP address:** If your current IP is in the `MASTER_AUTHORIZED_NETWORKS` list in your `config.sh`, you can use `kubectl` directly.
 *   **Add your IP to the authorized network:** You can run a `gcloud` command to add your IP to the list.
 *   **From Google Cloud Shell:** Cloud Shell is automatically authorized for clusters in the same project.
 *   **From a bastion host:** You can set up a bastion host in the same VPC as the cluster.

@@ -20,38 +20,19 @@ set -u  # Exit on undefined variable
 # CONFIGURATION VARIABLES
 ################################################################################
 
-# Project and Region
-PROJECT_ID="${PROJECT_ID:-gillman-infra}"
-REGION="${REGION:-us-central1}"
-ZONE="${ZONE:-us-central1-a}"
+# CONFIGURATION
+# ------------------------------------------------------------------------------
+# The script sources variables from the `config.sh` file.
+# If the file doesn't exist, it exits with an error.
 
-# Cluster Configuration
-CLUSTER_NAME="${CLUSTER_NAME:-gke-private-cluster}"
-CLUSTER_VERSION="${CLUSTER_VERSION:-1.34.0-gke.2201000}"
-RELEASE_CHANNEL="${RELEASE_CHANNEL:-rapid}"
-
-# Network Configuration
-VPC_NETWORK="projects/${PROJECT_ID}/global/networks/vpc-02-us-central"
-VPC_SUBNET="projects/${PROJECT_ID}/regions/${REGION}/subnetworks/vpc-02-subnet-04"
-
-# IP Ranges
-POD_CIDR="100.72.0.0/13"
-SERVICE_CIDR="${SERVICE_CIDR:-34.118.224.0/20}"  # Optional, can be auto-assigned
-
-# Master Authorized Networks (comma-separated, no spaces)
-MASTER_AUTHORIZED_NETWORKS="${MASTER_AUTHORIZED_NETWORKS:-172.16.1.2/32}"
-
-# Node Pool Configuration
-MACHINE_TYPE="${MACHINE_TYPE:-e2-medium}"
-NUM_NODES="${NUM_NODES:-3}"
-DISK_SIZE="${DISK_SIZE:-100}"
-DISK_TYPE="${DISK_TYPE:-pd-balanced}"
-IMAGE_TYPE="COS_CONTAINERD"
-MAX_PODS_PER_NODE="110"
-
-# Upgrade Configuration
-MAX_SURGE_UPGRADE="${MAX_SURGE_UPGRADE:-1}"
-MAX_UNAVAILABLE_UPGRADE="${MAX_UNAVAILABLE_UPGRADE:-0}"
+if [ -f "config.sh" ]; then
+    # shellcheck source=config.sh
+    source "config.sh"
+else
+    echo "ERROR: Configuration file 'config.sh' not found."
+    echo "Please copy 'config.sh.example' to 'config.sh' and customize it."
+    exit 1
+fi
 
 ################################################################################
 # COLOR OUTPUT
@@ -245,7 +226,7 @@ create_cluster() {
         \
         `# Tags and Labels` \
         --tags="gke-cluster,private-cluster" \
-        --labels="environment=production,managed-by=script"
+        --labels="environment=lab-test,managed-by=script"
     
     if [ $? -eq 0 ]; then
         log_success "Cluster '$CLUSTER_NAME' created successfully!"

@@ -1,0 +1,102 @@
+#!/bin/bash
+
+# ------------------------------------------------------------------------------
+# GKE Cluster Configuration
+#
+# Instructions:
+# 1. Copy this file to "config.sh"
+#    cp config.sh.example config.sh
+#
+# 2. Edit the variables in "config.sh" to match your environment.
+#
+# 3. Run the cluster creation script. The script will automatically source the
+#    variables from your "config.sh" file.
+#
+# Note: "config.sh" is ignored by git to prevent committing sensitive data.
+# ------------------------------------------------------------------------------
+
+# --- Project and Location ---
+
+# Google Cloud Project ID
+# Example: "my-gcp-project-12345"
+export PROJECT_ID="gillman-infra"
+
+# Google Cloud Region for the cluster
+# Example: "us-west1"
+export REGION="us-central1"
+
+# Google Cloud Zone for the cluster (for zonal clusters)
+# Example: "us-west1-a"
+export ZONE="us-central1-a"
+
+
+# --- Cluster Identity ---
+
+# Name for the GKE cluster
+# Example: "my-production-cluster"
+export CLUSTER_NAME="gke-private-cluster"
+
+# GKE version for the control plane and nodes
+# Find available versions with: gcloud container get-server-config --region=$REGION
+# Example: "1.28.3-gke.12345"
+export CLUSTER_VERSION="1.34.0-gke.2201000"
+
+# GKE release channel (rapid, regular, stable)
+# See: https://cloud.google.com/kubernetes-engine/docs/concepts/release-channels
+export RELEASE_CHANNEL="rapid"
+
+
+# --- Networking ---
+
+# VPC Network to deploy the cluster into
+# Format: "projects/<PROJECT_ID>/global/networks/<NETWORK_NAME>"
+export VPC_NETWORK="projects/${PROJECT_ID}/global/networks/vpc-02-us-central"
+
+# VPC Subnet for the cluster nodes and pods
+# Format: "projects/<PROJECT_ID>/regions/<REGION>/subnetworks/<SUBNET_NAME>"
+export VPC_SUBNET="projects/${PROJECT_ID}/regions/${REGION}/subnetworks/vpc-02-subnet-04"
+
+# Pod IP address range (CIDR notation)
+# Must be a valid private IP range.
+export POD_CIDR="100.72.0.0/13"
+
+# Service IP address range (CIDR notation)
+# Optional, can be auto-assigned by GKE if left empty.
+export SERVICE_CIDR="34.118.224.0/20"
+
+# Allowed IP ranges to access the GKE control plane (CIDR notation)
+# Comma-separated list, no spaces.
+# Example: "1.2.3.4/32,5.6.7.8/32"
+export MASTER_AUTHORIZED_NETWORKS="172.16.1.2/32"
+
+
+# --- Node Pool Configuration ---
+
+# VM machine type for the worker nodes
+# Example: "n2-standard-4"
+export MACHINE_TYPE="e2-medium"
+
+# Number of nodes per zone in the default node pool
+export NUM_NODES="3"
+
+# Boot disk size in GB for each node
+export DISK_SIZE="100"
+
+# Boot disk type (pd-standard, pd-balanced, pd-ssd)
+export DISK_TYPE="pd-balanced"
+
+# Node OS image type
+# Example: "COS_CONTAINERD" or "UBUNTU_CONTAINERD"
+export IMAGE_TYPE="COS_CONTAINERD"
+
+# Maximum number of pods that can run on a single node
+export MAX_PODS_PER_NODE="110"
+
+
+# --- Upgrade Strategy ---
+
+# Maximum number of extra nodes created during an upgrade
+export MAX_SURGE_UPGRADE="1"
+
+# Maximum number of nodes that can be unavailable during an upgrade
+export MAX_UNAVAILABLE_UPGRADE="0"
