@@ -19,22 +19,22 @@
 
 # Google Cloud Project ID
 # Example: "my-gcp-project-12345"
-export PROJECT_ID="gillman-infra"
+export PROJECT_ID="your_project_id"
 
 # Google Cloud Region for the cluster
 # Example: "us-west1"
-export REGION="us-central1"
+export REGION="your_region"
 
 # Google Cloud Zone for the cluster (for zonal clusters)
 # Example: "us-west1-a"
-export ZONE="us-central1-a"
+export ZONE="your_zone"
 
 
 # --- Cluster Identity ---
 
 # Name for the GKE cluster
 # Example: "my-production-cluster"
-export CLUSTER_NAME="gke-private-cluster"
+export CLUSTER_NAME="your_cluster_name"
 
 # GKE version for the control plane and nodes
 # Find available versions with: gcloud container get-server-config --region=$REGION
@@ -58,19 +58,21 @@ export VPC_SUBNET="projects/${PROJECT_ID}/regions/${REGION}/subnetworks/vpc-02-s
 
 # Pod IP address range (CIDR notation)
 # Must be a valid private IP range.
-export POD_CIDR="100.72.0.0/13"
+export POD_CIDR="your_pod_cidr"
 
 # Service IP address range (CIDR notation)
 # Optional, can be auto-assigned by GKE if left empty.
-export SERVICE_CIDR="34.118.224.0/20"
+export SERVICE_CIDR="your_services_cidr"
 
 # Allowed IP ranges to access the GKE control plane (CIDR notation)
 # Comma-separated list, no spaces.
 # Example: "1.2.3.4/32,5.6.7.8/32"
-export MASTER_AUTHORIZED_NETWORKS="172.16.1.2/32"
+export MASTER_AUTHORIZED_NETWORKS="your_man"
 
 
 # --- Node Pool Configuration ---
+
+# For lab testing & validation, the recommendation is to leave these values as default.
 
 # VM machine type for the worker nodes
 # Example: "n2-standard-4"
