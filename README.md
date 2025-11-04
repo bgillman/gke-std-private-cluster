@@ -60,12 +60,13 @@ The scripts will automatically load the variables from this file when you run th
 Once you have created and customized your `config.sh` file, you can run either of the creation scripts.
 
 1.  **Make the script executable:**
-    Create a Zonal Cluster
+
+    Use this script to create a Zonal Cluster
     ```bash
     chmod +x create-gke-cluster.sh
     ```
 
-    Create a Regional Cluster
+    Use this script to create a Regional Cluster
     ```bash
     chmod +x create-gke-regional-cluster.sh
     ```
