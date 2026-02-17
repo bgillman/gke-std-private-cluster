@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 
 ################################################################################
 # GKE Private Standard Cluster Deployment Script
